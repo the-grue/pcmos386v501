@@ -2929,7 +2929,7 @@ ntrash1 dd	0			; used with int6f
 ntrash2 dd	0			; used with int6f
 ntrash3 dd	0			; used with int6f
 m17wrap db	'N'			; set to 'Y' if 1000000 wraps to 0
-mlimit  dd      4095			; limiter for memory gap issues
+mlimit  dd      2048			; limiter for memory issues
 nmi_slctr	dw	?		; data selector for nmi handler
 nmi_vector	dd	?		; fword pointer to nmi handler
 		dw	?		; selector portion of nmi fword handler
@@ -8998,11 +8998,11 @@ sw_not_n:
 	add	bx,2
 	call	dectobin		; get the number in ax
 	dec	bx			; leave bx -> last char of parm
-	cmp	ax,4095			; range must be reasonable
+	cmp	ax,2048			; range must be reasonable
 	ja	sw_synerr
-	cmp	ax,1			; must have >= 1M for mm use
+	cmp	ax,2			; must have > 1M for mm use
 	jb	sw_synerr
-	mov	[mlimit], ax
+	mov	word ptr [mlimit], ax
 	jmp	sw_hunt
 
 et2ofs	dw	mmgrp:entint02
@@ -9438,14 +9438,7 @@ vmstart:
 ; write total memory size
 
 	mov	ax,[parmtot]		; compute mbytes of total memory
-	shr	ax,1
-	shr	ax,1
-	shr	ax,1
-	shr	ax,1
-	shr	ax,1
-	shr	ax,1
-	shr	ax,1
-	shr	ax,1
+	shr	ax,8			; MB instead of KB
 	xor	dx,dx
 	mov	bx,offset mmgrp:msgem+4
 	mov	cx,5
@@ -9715,6 +9708,10 @@ build_page:
 bpg1:
 	mov	es:[0],eax		; restore zero divide vector
 
+;  mlimit needs to be in bytes for test_extmem
+
+        shl     [mlimit], 20            ; convert to bytes 
+
 ; test for extended memory starting at meg1
 
 	mov	ebx,100000h
@@ -9934,7 +9931,6 @@ test_extmem:
 	mov	dx,7755h		; test pattern
 	xor	eax,eax 		; to blank out found blocks
 	cld
-	shl	[mlimit], 20		; convert to bytes
 txm1:
 	xif edi == 1000000h && [m17wrap] == 'Y' then txm2  ; quit before a wrap
 	cmp	edi, [mlimit]		; compare with search
