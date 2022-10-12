@@ -6,9 +6,9 @@
                (c) copyright 1992, the software link inc.
                        all rights reserved
 
- module name:        
+ module name:
  creation date:      12/10/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -22,14 +22,16 @@ jts 06/30/18	added code to allow build under bcc or tcc
 
 #include <stdlib.h>
 #include <dos.h>
+#ifdef __BORLANDC__
 #include <dir.h>
+#endif
 #include <string.h>
 
 #ifdef __BORLANDC__
 #include <malloc.h>
 #endif
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 //==== internal data structure
@@ -45,7 +47,7 @@ typedef struct fname_type {
 ;
 ; in:	fptr -> root of fntype list
 ;
-; out:	
+; out:
 ;
 ========================================================================*/
 static void free_lptr_list(fntype *fptr) {
@@ -80,10 +82,10 @@ static void free_lptr_list(fntype *fptr) {
 ;	attr = the attribute of the found file
 ;
 ; the use of the name "process_file" is merely an example.  since the
-; name of the work function must be passed in to this function 
+; name of the work function must be passed in to this function
 ; through the fspc_type structure, any valid function name may be used.
 ;
-; a list of files is built ahead of time is to prevent changes in 
+; a list of files is built ahead of time is to prevent changes in
 ; the disk directory from causing redundant processing.
 ; such changes could occur due to the actions of process_file().
 ;
@@ -96,15 +98,15 @@ static void free_lptr_list(fntype *fptr) {
 ; with a backslash, one will be added so, given that the string in
 ; dpbuf will already have a terminator, there must always be 13 free
 ; bytes at the end of this buffer.
-; 
+;
 ;
 ; in:	fsptr -> a filled out fspc_type type of structure
 ;	dpbuf -> a buffer containing the drive/path portion
 ;		  of the search specification.  SEE NOTE ABOVE.
-; 
+;
 ; out:	retval = 0 means no error
 ;	retval = 1 means insufficient memory for file list
-;	retval = 2 means an error from findfirst/findnext 
+;	retval = 2 means an error from findfirst/findnext
 ;		    other than no more files
 ;	retval = 4 means a != 0 return from the process function
 ;
@@ -114,7 +116,11 @@ word ul_trace_dirl(byte *dpbuf, fspc_type *fsptr) {
 
   byte *orig_end;			// ptr to original end of dpbuf
   byte *trunc_ptr;			// used to maintain wbuf
+#ifdef __BORLANDC__
   struct ffblk ffblk;			// structure for findfirst/next
+#else
+  struct find_t ffblk;
+#endif
   word err_stat;			// holds error status
   fntype *root_lptr = NULL;		// root of the heap list of fnames
   fntype *lptr = NULL;			// used to build heap list
@@ -141,15 +147,23 @@ word ul_trace_dirl(byte *dpbuf, fspc_type *fsptr) {
   while(1) {
 
     if(root_lptr == NULL) {
+#ifdef __BORLANDC__
       err_stat = findfirst(dpbuf,&ffblk,fsptr->search_attr);
-      }     
+#else
+      err_stat = _dos_findfirst(dpbuf, fsptr->search_attr, &ffblk);
+#endif
+      }
     else {
+#ifdef __BORLANDC__
       err_stat = findnext(&ffblk);
+#else
+      err_stat = _dos_findnext(&ffblk);
+#endif
       }
     if(err_stat != 0) {
       if(_doserrno == 0x12) {
         break;
-        }       
+        }
     else {
         free_lptr_list(root_lptr);
         *orig_end = 0;
@@ -166,11 +180,16 @@ word ul_trace_dirl(byte *dpbuf, fspc_type *fsptr) {
       return(1);
       }
     lptr->next = NULL;
+#ifdef __BORLANDC__
     strcpy(lptr->fname,ffblk.ff_name);
     lptr->attr = ffblk.ff_attrib;
+#else
+    strcpy(lptr->fname,ffblk.name);
+    lptr->attr = ffblk.attrib;
+#endif
     if(last_lptr == NULL) {
       root_lptr = lptr;
-      }     
+      }
     else {
       last_lptr->next = lptr;
       }
@@ -181,7 +200,7 @@ word ul_trace_dirl(byte *dpbuf, fspc_type *fsptr) {
     }
 
   // restore dpbuf and then for each found name in the list,
-  // call the work function with a pointer to dpbuf, the found 
+  // call the work function with a pointer to dpbuf, the found
   // name and its attribute.
 
   *trunc_ptr = 0;
