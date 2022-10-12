@@ -27,7 +27,7 @@ mjs 05/21/92	reworked to support large files and tab expansion
 #include <string.h>
 #include <stdio.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 extern byte ul_vidrows;
@@ -39,13 +39,13 @@ extern byte ul_vidrows;
 
 #define TOT_LNS_REC 400
 
-// HYST_FCTR is the file loading hysteresis factor.  it must 
+// HYST_FCTR is the file loading hysteresis factor.  it must
 // always be less than TOT_LNS_REC.
 
 #define HYST_FCTR 80
 
-// FLS_BYTES is the forward load shift byte count -- the number 
-// of bytes to be shifted back towards the front of the tracking 
+// FLS_BYTES is the forward load shift byte count -- the number
+// of bytes to be shifted back towards the front of the tracking
 // array for a forward load.
 
 #define FLS_BYTES ((TOT_LNS_REC-HYST_FCTR)*sizeof(word *))
@@ -97,10 +97,10 @@ word cache_elements;
 
 /*======================================================================
 ; static void disp_line(byte x, byte y, byte vattr, byte *str, byte tt)
-; 
-; in:	
 ;
-; out:	
+; in:
+;
+; out:
 ;
 ========================================================================*/
 static void disp_line(byte x, byte y, byte vattr, byte *str, byte tt) {
@@ -112,10 +112,10 @@ static void disp_line(byte x, byte y, byte vattr, byte *str, byte tt) {
 
 /*======================================================================
 ; static void put_cache(word cur_line)
-; 
-; in:	
 ;
-; out:	
+; in:
+;
+; out:
 ;
 ========================================================================*/
 static void put_cache(word cur_line) {
@@ -141,10 +141,10 @@ static void put_cache(word cur_line) {
 ;
 ; find the cache element that has a file line number less that the
 ; target but is closest to it.
-; 
-; in:	
 ;
-; out:	
+; in:
+;
+; out:
 ;
 ========================================================================*/
 static word get_cache(word target) {
@@ -176,10 +176,10 @@ static word get_cache(word target) {
 
 /*======================================================================
 ; static void free_lines(void)
-; 
-; in:	
 ;
-; out:	
+; in:
+;
+; out:
 ;
 ========================================================================*/
 static void free_lines(void) {
@@ -197,8 +197,8 @@ static void free_lines(void) {
 
 /*======================================================================
 ; static byte readline(void)
-; 
-; in:	
+;
+; in:
 ;
 ; out:	retval = 0 if ok to proceed, good line from file
 ;	retval = 1 if found eof
@@ -235,10 +235,10 @@ static byte readline(void) {
 
 /*======================================================================
 ; static byte forward_load(void)
-; 
-; in:	
 ;
-; out:	
+; in:
+;
+; out:
 ;
 ========================================================================*/
 static byte forward_load(void) {
@@ -255,13 +255,16 @@ static byte forward_load(void) {
 
   // move the remainder of the pointers to the front of the array.
   // and mark the pointers in that leftover area as free.
-
+#ifdef __BORLANDC__
   movmem(&ln_array[HYST_FCTR],&ln_array[0],FLS_BYTES);
+#else
+  memmove(&ln_array[HYST_FCTR],&ln_array[0],FLS_BYTES);
+#endif
   for(x=0;x<HYST_FCTR;x++) {
     ln_array[FL_START+x] = NULL;
     }
 
-  // determine the line number of the first line that will be 
+  // determine the line number of the first line that will be
   // read and report it to put_cache.
 
   put_cache(last_ln_rec+1);
@@ -272,7 +275,7 @@ static byte forward_load(void) {
   last_ln_rec += HYST_FCTR;
 
   // read HYST_FCTR more lines from the file, allocating storage for
-  // them with strdup() and recording their pointers in the 
+  // them with strdup() and recording their pointers in the
   // tracking array starting at record FL_START.
 
   for(x=0;x<HYST_FCTR;x++) {
@@ -298,10 +301,10 @@ static byte forward_load(void) {
 
 /*======================================================================
 ; static byte reverse_load(void)
-; 
-; in:	
 ;
-; out:	
+; in:
+;
+; out:
 ;
 ========================================================================*/
 static byte reverse_load(void) {
@@ -330,8 +333,8 @@ static byte reverse_load(void) {
 
   skip_cnt = frst_ln_rec - get_cache(frst_ln_rec);
 
-  // read recs_to_load more lines from the file, allocating 
-  // storage for them with strdup() and recording their pointers 
+  // read recs_to_load more lines from the file, allocating
+  // storage for them with strdup() and recording their pointers
   // in the tracking array starting at record 0.
 
   backstep = 0;
@@ -368,10 +371,10 @@ static byte reverse_load(void) {
 
 /*======================================================================
 ; static byte first_load(void)
-; 
-; in:	
 ;
-; out:	
+; in:
+;
+; out:
 ;
 ========================================================================*/
 static byte first_load(void) {
@@ -383,8 +386,8 @@ static byte first_load(void) {
 
   free_lines();
 
-  // read up to TOT_LNS_REC lines from the file, allocating 
-  // storage for them with strdup() and recording their pointers 
+  // read up to TOT_LNS_REC lines from the file, allocating
+  // storage for them with strdup() and recording their pointers
   // in the tracking array starting at record 0.
 
   fseek(fh,0L,SEEK_SET);
@@ -415,10 +418,10 @@ static byte first_load(void) {
 
 /*======================================================================
 ; static byte last_load(void)
-; 
-; in:	
 ;
-; out:	
+; in:
+;
+; out:
 ;
 ========================================================================*/
 static byte last_load(void) {
@@ -437,10 +440,10 @@ static byte last_load(void) {
 
 /*======================================================================
 ; static void clean_up(void)
-; 
-; in:	
 ;
-; out:	
+; in:
+;
+; out:
 ;
 ========================================================================*/
 static void clean_up(void) {
@@ -454,7 +457,7 @@ static void clean_up(void) {
 /*======================================================================
 ;,fs
 ; byte ul_view(byte *fname, byte *msg1, byte *msg2, byte vattr)
-; 
+;
 ; present a file for browsing.  up and down arrows scroll a line
 ; at a time.  pgup and pgdn scroll a screenful at a time.  home and
 ; end take you to the start and end of the document.
@@ -632,7 +635,7 @@ byte ul_view(byte *fname, byte *msg1, byte *msg2, byte vattr) {
           }
         else {
 
-          // if advancing by a whole page is too much, 
+          // if advancing by a whole page is too much,
           // go for a partial page.
 
           top_ln_dsp = actual_last_ln - tot_lns_dsp + 1;
@@ -654,4 +657,3 @@ byte ul_view(byte *fname, byte *msg1, byte *msg2, byte vattr) {
       }
     }
   }
-
