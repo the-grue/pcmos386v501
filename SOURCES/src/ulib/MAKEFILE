@@ -23,3 +23,4 @@ clean: .symbolic
 	del *.obj
 	del $(lib)
 	del *.bak
+	del *.err

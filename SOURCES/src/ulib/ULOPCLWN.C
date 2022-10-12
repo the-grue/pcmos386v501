@@ -8,7 +8,7 @@
 
  module name:        ulopclwn.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -26,16 +26,16 @@ jts 06/30/18	added code to allow build under bcc or tcc
 #include <malloc.h>
 #endif
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
 ;,fs
 ; wintype ul_open_window(byte xl,byte yt,byte xr,byte yb,byte vattr1,byte vattr2,byte boxtype)
-; 
-; in:	
 ;
-; out:	
+; in:
+;
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -56,7 +56,7 @@ wintype ul_open_window(byte xl,byte yt,byte xr,byte yb,byte vattr1,byte vattr2,b
     _ffree(win);
 #else
   if((win->winptr = malloc((xr-xl+1)*(yb-yt+1)*2)) == NULL) {
-    free(win);
+    free((void*)win);
 #endif
     return(NULL);
     }
@@ -77,10 +77,10 @@ wintype ul_open_window(byte xl,byte yt,byte xr,byte yb,byte vattr1,byte vattr2,b
 /*======================================================================
 ;,fs
 ; void ul_close_window(wintype win)
-; 
-; in:	
 ;
-; out:	
+; in:
+;
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -92,8 +92,8 @@ void ul_close_window(wintype win) {
   _ffree(win->winptr);
   _ffree(win);
 #else
-  free(win->winptr);
-  free(win);
+  free((void*)win->winptr);
+  free((void*)win);
 #endif
   }
 
