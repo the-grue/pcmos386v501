@@ -8,7 +8,7 @@
 
  module name:        ulformt.c
  creation date:      12/17/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -23,13 +23,13 @@ mjs 12/17/92	created this module
 #include <dos.h>
 #include <mem.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
 ;,fs
 ; byte ul_form_template(byte *filespec, byte *template)
-; 
+;
 ; call int21 function 29 to parse a filespec into normalized form.
 ;
 ; NOTE: this function makes use of an INT21 function call.
@@ -42,11 +42,15 @@ mjs 12/17/92	created this module
 ;	 buffer at *template = parsed version of non-wild filespec
 ;	retval = 1 if no error and wildcard characters found
 ;	 buffer at *template = parsed version wildcard type filespec
-;	retval = 0xff if error 
+;	retval = 0xff if error
 ;	 buffer at *template = undefined
 ;
 ;,fe
 ========================================================================*/
+#ifndef __BORLANDC__
+unsigned int get_DS(void);
+#endif
+
 byte ul_form_template(byte *filespec, byte *template) {
 
   union REGS regs; struct SREGS sregs;
@@ -55,13 +59,20 @@ byte ul_form_template(byte *filespec, byte *template) {
   memset(fcb,0,37);
   regs.x.ax = 0x2903;
   regs.x.si = (word) filespec;
+#ifdef __BORLANDC__
   sregs.ds = _DS;
+#else
+  sregs.ds = get_DS();
+#endif
   regs.x.di = (word) &fcb[0];
+#ifdef __BORLANDC__
   sregs.es = _DS;
+#else
+  sregs.es = get_DS();
+#endif
   int86x(0x21,&regs,&regs,&sregs);
   memcpy(template,&fcb[1],11);
   return(regs.h.al);
   }
 
 
-
