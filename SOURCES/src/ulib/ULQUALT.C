@@ -8,7 +8,7 @@
 
  module name:        ulqualt.c
  creation date:      12/17/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -22,13 +22,13 @@ mjs 12/17/92	created this module
 #include <stdlib.h>
 #include <dos.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
 ;,fs
 ; byte ul_qualify_template(byte *n1, byte *n2)
-; 
+;
 ; in:	n1 -> reference template
 ;	n2 -> template to qualify
 ;

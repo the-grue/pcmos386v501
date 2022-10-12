@@ -8,7 +8,7 @@
 
  module name:        ulmessage.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -27,7 +27,7 @@ jts 06/30/18	added code to allow build under bcc or tcc
 #endif
 #include <string.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 #define getmsgtag	1
@@ -47,7 +47,7 @@ static word tagcount;
 
 /*======================================================================
 ; static word ul_storetag(byte *buf, word tag_index)
-; 
+;
 ; verify that the buffer contains a tag in the correct format.
 ;
 ; in:	buf -> the string to process
@@ -96,7 +96,7 @@ static word ul_storetag(byte *buf, word tag_index) {
 
 /*======================================================================
 ; static word ul_store_line(byte *buf, word tag_index, word pos)
-; 
+;
 ; stores buffer contents into message database.
 ;
 ; in:	buf -> string to be stored
@@ -119,13 +119,13 @@ static word ul_store_line(byte *buf, word tag_index, word pos) {
   while(((*s) != '\n') && ((*s) != NULL)) {
     (*t++) = (*s++);
     }
-  (*t) = NULL;
+  (*t) = (byte)NULL;
   return(0);
   }
 
 /*======================================================================
 ; static word ul_nextitem(FILE *handle, word tag_index)
-; 
+;
 ; retrieve next message item and store in the message database.
 ;
 ; in:	handle -> file structure
@@ -191,7 +191,7 @@ static word ul_nextitem(FILE *handle, word tag_index) {
 /*======================================================================
 ;,fs
 ; byte ul_init_msg(byte *fname)
-; 
+;
 ; initialize message system.
 ;
 ; in:	fname -> name of file to load into message database
@@ -229,7 +229,7 @@ byte ul_init_msg(byte *fname) {
 /*======================================================================
 ;,fs
 ; byte *ul_get_msg(byte *scan, word line_index)
-; 
+;
 ; retrieve a message based on the input tag.
 ;
 ; in:	srchtag -> tag string to search for
@@ -259,7 +259,7 @@ byte *ul_get_msg(byte *scan, word line_index) {
 /*======================================================================
 ;,fs
 ; byte ul_get_msgcnt(byte *scan)
-; 
+;
 ; retrieve the number of messages based on the input tag.
 ;
 ; in:	srchtag -> tag string to search for
@@ -288,7 +288,7 @@ byte ul_get_msgcnt(byte *scan) {
 /*======================================================================
 ;,fs
 ; word ul_disp_msg(word x, word y, byte vidattr, byte *srchtag, byte tranflag)
-; 
+;
 ; display a message based on input message tag.  the cursor is
 ; left positioned after the last character of the last line, just
 ; as if a non-direct video method had been used.

@@ -8,7 +8,7 @@
 
  module name:        ulgetstr.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -25,13 +25,13 @@ mjs 04/01/92	created this module
 #include <ctype.h>
 #include <string.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
 ;,fs
 ; byte ul_get_string(byte x, byte y, byte vattr, byte string[], word count, byte *allowed_punc)
-; 
+;
 ; prompt the user for a string.
 ;
 ; in:	x = starting x coordinate for input field
@@ -107,4 +107,3 @@ byte ul_get_string(byte x, byte y, byte vattr, byte string[], word count, byte *
     }
   }
 
-

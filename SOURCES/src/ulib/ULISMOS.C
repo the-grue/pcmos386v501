@@ -8,7 +8,7 @@
 
  module name:        ulismos.c
  creation date:      12/15/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -22,7 +22,7 @@ mjs 12/15/92	created this module
 #include <stdlib.h>
 #include <dos.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 static union REGS regs;
@@ -30,8 +30,8 @@ static union REGS regs;
 /*======================================================================
 ;,fs
 ; word ul_ismos(void)
-; 
-; in:	
+;
+; in:
 ;
 ; out:	retval != 0 if running under mos
 ;
@@ -52,4 +52,3 @@ word ul_ismos(void) {
   intdos(&regs,&regs);
   return(!(regs.x.ax == mos_ver));
   }
-

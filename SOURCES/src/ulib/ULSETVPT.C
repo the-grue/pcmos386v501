@@ -8,7 +8,7 @@
 
  module name:        ulsetvpt.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -25,7 +25,7 @@ mjs 04/01/92	created this module
 #include <conio.h>
 #include <ctype.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 dword ul_vidptr;			// video memory pointer
@@ -35,7 +35,7 @@ byte ul_vidcols;			// # of display columns
 /*======================================================================
 ;,fs
 ; void ul_set_vidptr(word vid_seg, word rows, word cols)
-; 
+;
 ; assign the video buffer segment address to the internal variable
 ; named ul_vidptr.
 ;
@@ -45,7 +45,7 @@ byte ul_vidcols;			// # of display columns
 ;	rows = # of display rows
 ;	cols = # of display columns
 ;
-; out:	
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -71,10 +71,10 @@ void ul_set_vidptr(word vid_seg, word rows, word cols) {
 /*======================================================================
 ;,fs
 ; word ul_get_vidseg(void)
-; 
+;
 ; return the current segment fro ul_vidptr.
 ;
-; in:	
+; in:
 ;
 ; out:	retval = segment portion of ul_vidptr
 ;
@@ -84,4 +84,3 @@ word ul_get_vidseg(void) {
 
   return(DSEG(ul_vidptr));
   }
-

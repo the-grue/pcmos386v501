@@ -8,7 +8,7 @@
 
  module name:        uldrwhbr.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -21,13 +21,13 @@ mjs 04/01/92	created this module
 
 #include <stdlib.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
 ;,fs
 ; void ul_draw_hbar(byte xl, byte y, byte xr, byte vidattr, byte boxtype)
-; 
+;
 ; draw a horizontal line within a box, with T type connectors at each end
 ;
 ; in:	xl = 0 based column number of left edge
@@ -36,7 +36,7 @@ mjs 04/01/92	created this module
 ;	vidattr = video attribute byte to write with the char
 ;	boxtype = numeric code for type of box.  see ulib.h
 ;
-; out:	
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -69,4 +69,3 @@ void ul_draw_hbar(byte xl, byte y, byte xr, byte vidattr, byte boxtype) {
   ul_char2video(xr,y,vidattr,r_side);
   }
 
-

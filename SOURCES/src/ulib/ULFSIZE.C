@@ -8,7 +8,7 @@
 
  module name:        ulfsize.c
  creation date:      12/15/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -24,16 +24,16 @@ mjs 12/15/92	created this module
 #include <io.h>
 #include <stdio.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
 ;,fs
 ; long ul_getfilesize(byte *file_name)
 ;
-; in:	
+; in:
 ;
-; out:	
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -50,4 +50,5 @@ long ul_getfilesize(byte *file_name) {
   file_length = ftell(fp);
   fclose(fp);
   return(file_length);
-  }
+}
+

@@ -8,7 +8,7 @@
 
  module name:        ulfilbox.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -21,13 +21,13 @@ mjs 04/01/92	created this module
 
 #include <stdlib.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
 ;,fs
 ; void ul_fill_box(byte xl, byte yt, byte xr, byte yb, byte vidattr, byte fillchar)
-; 
+;
 ; fill a rectangular box on the screen, using direct video
 ;
 ; in:	xl = 0 based column number of left edge
@@ -37,7 +37,7 @@ mjs 04/01/92	created this module
 ;	vidattr = video attribute byte to write with the char
 ;	boxtype = numeric code for type of box.  see ulib.h
 ;
-; out:	
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -58,4 +58,3 @@ void ul_fill_box(byte xl, byte yt, byte xr, byte yb, byte vidattr, byte fillchar
     }
   }
 
-

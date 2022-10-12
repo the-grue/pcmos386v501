@@ -139,4 +139,3 @@ byte ul_form_template(byte *filespec, byte *template);
 byte ul_qualify_template(byte *n1, byte *n2);
 
 
-

@@ -8,7 +8,7 @@
 
  module name:        ulgetkst.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -23,22 +23,22 @@ mjs 04/01/92	created this module
 #include <string.h>
 #include <ctype.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
 ;,fs
 ; byte ul_get_key_set(byte *xset)
-; 
+;
 ; wait until a keystroke is pressed which is within the specified
 ; set of characters, beeping for other characters.
-; the keystroke is not echoed to the screen.  
+; the keystroke is not echoed to the screen.
 ; extended keycodes are converted to single byte values above 0x80
 ; (by ul_get_key).
 ; alpha keys are internally converted to uppercase.
 ; see the defined values in ulib.h.
 ;
-; in:	
+; in:
 ;
 ; out:	the keycode of the key that was pressed
 ;
@@ -57,4 +57,3 @@ byte ul_get_key_set(byte *xset) {
     }
   }
 
-

@@ -8,7 +8,7 @@
 
  module name:        ulstr2v.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -25,7 +25,7 @@ mjs 04/01/92	created this module
 #include <conio.h>
 #include <ctype.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 extern dword ul_vidptr;			/* video pointer */
@@ -33,7 +33,7 @@ extern dword ul_vidptr;			/* video pointer */
 /*======================================================================
 ;,fs
 ; void ul_str2video(byte x, byte y, byte vidattr, byte *st, byte transflag)
-; 
+;
 ; write an asciiz string to direct video at the specified coordinates
 ; using the specified video attribute.
 ;
@@ -45,7 +45,7 @@ extern dword ul_vidptr;			/* video pointer */
 ;
 ;	global: ul_vidptr must be set.  see ul_set_vidptr
 ;
-; out:	
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -67,4 +67,3 @@ void ul_str2video(byte x, byte y, byte vidattr, byte *st, byte transflag) {
     }
   }
 
-

@@ -8,7 +8,7 @@
 
  module name:        ulgetcho.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -23,13 +23,13 @@ mjs 04/01/92	created this module
 #include <dos.h>
 #include <ctype.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
 ;,fs
 ; byte ul_get_choice(byte x, byte y, byte vidattr, byte ch1, byte ch2)
-; 
+;
 ; prompt for a binary choice, either character ch1 or character ch2
 ; (or escape).  the enter key must be pressed to register the choice.
 ; ul_get_string() is used so the key pressed will be displayed and
@@ -66,4 +66,3 @@ byte ul_get_choice(byte x, byte y, byte vidattr, byte ch1, byte ch2) {
   }
 
 
-

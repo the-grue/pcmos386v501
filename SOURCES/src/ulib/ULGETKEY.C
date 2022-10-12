@@ -8,7 +8,7 @@
 
  module name:        ulgetkey.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -22,7 +22,7 @@ mjs 04/01/92	created this module
 #include <stdlib.h>
 #include <conio.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 static byte (*filter_hook)(byte) = NULL;
@@ -30,13 +30,13 @@ static byte (*filter_hook)(byte) = NULL;
 /*======================================================================
 ;,fs
 ; void ul_set_gkhook(byte (*new_filter_func)(byte))
-; 
-; establishes a filter function for ul_get_key().  useful for 
+;
+; establishes a filter function for ul_get_key().  useful for
 ; hot-key support.
 ;
 ; in:	new_filter_func -> filter function
 ;
-; out:	
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -48,13 +48,13 @@ void ul_set_gkhook(byte (*new_filter_func)(byte)) {
 /*======================================================================
 ;,fs
 ; byte ul_get_key(void)
-; 
-; wait until a keystroke is pressed.  
-; the keystroke is not echoed to the screen.  
-; extended keycodes are converted to single byte values above 0x80.  
+;
+; wait until a keystroke is pressed.
+; the keystroke is not echoed to the screen.
+; extended keycodes are converted to single byte values above 0x80.
 ; see the defined values in ulib.h.
 ;
-; in:	
+; in:
 ;
 ; out:	the keycode of the key that was pressed
 ;
@@ -87,4 +87,3 @@ byte ul_get_key(void) {
   return(t);
   }
 
-

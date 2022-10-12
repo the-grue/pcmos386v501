@@ -8,7 +8,7 @@
 
  module name:        ulrdlbl.c
  creation date:      12/15/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -25,17 +25,17 @@ mjs 12/15/92	created this module
 #include <dir.h>
 #include <string.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
 ;,fs
 ; void ul_read_dsklbl(byte drvnum, byte *lbuf)
-; 
+;
 ; in:	drvnum = drive number (1 for 'A', 2 for 'B', etc.)
 ;	lbuf -> buffer that is at least 12 chars in size
 ;
-; out:	
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -71,4 +71,3 @@ void ul_read_dsklbl(byte drvnum, byte *lbuf) {
     }
   }
 
-

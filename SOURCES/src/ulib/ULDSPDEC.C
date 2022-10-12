@@ -8,7 +8,7 @@
 
  module name:        uldspdec.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -22,7 +22,7 @@ mjs 04/01/92	created this module
 #include <stdlib.h>
 #include <string.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
@@ -30,17 +30,17 @@ mjs 04/01/92	created this module
 ; void ul_display_decimal(word val, byte x, byte y, byte vidattr, byte width)
 ;
 ; display a word's decimal representation using direct video.  the
-; number is displayed with leading zero's suppressed and right 
+; number is displayed with leading zero's suppressed and right
 ; justified.
 ;
 ; in:	val = the value to display
-;	x = 0 based column number 
+;	x = 0 based column number
 ;	y = 0 based row number
 ;	vidattr = video attribute byte to write with the char
 ;	width = the width of the field
 ;
-; out:	
-;	
+; out:
+;
 ;,fe
 ========================================================================*/
 void ul_display_decimal(word val, byte x, byte y, byte vidattr, byte width) {
@@ -62,4 +62,3 @@ void ul_display_decimal(word val, byte x, byte y, byte vidattr, byte width) {
   ul_str2video(x+adj,y,vidattr,cnv_buf,0);
   }
 
-

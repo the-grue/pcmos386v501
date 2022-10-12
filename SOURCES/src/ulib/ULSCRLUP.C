@@ -8,7 +8,7 @@
 
  module name:        ulscrlup.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -22,7 +22,7 @@ mjs 04/01/92	created this module
 #include <stdlib.h>
 #include <string.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 extern dword ul_vidptr;			/* video pointer */
@@ -30,7 +30,7 @@ extern dword ul_vidptr;			/* video pointer */
 /*======================================================================
 ;,fs
 ; void ul_scroll_lines_up(byte xl, byte yt, byte xr, byte yb, byte vidattr)
-; 
+;
 ; scroll the lines within a rectangular region of the screen up
 ; by one row.
 ; does direct video writing.
@@ -43,7 +43,7 @@ extern dword ul_vidptr;			/* video pointer */
 ;
 ;	global: ul_vidptr must be set.  see ul_set_vidptr
 ;
-; out:	
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -56,7 +56,7 @@ void ul_scroll_lines_up(byte xl, byte yt, byte xr, byte yb, byte vidattr) {
   dword vptr;
   word blankword;
 
-  blankword = vidattr << 8 + 0x20;
+  blankword = (word)(vidattr << 8) + 0x20;
   cpycnt = (xr-xl+1)*2;		/* # of bytes in range of columns */
   srcofs = xl*2+(yt+1)*160;
   dstofs = xl*2+yt*160;
@@ -79,4 +79,3 @@ void ul_scroll_lines_up(byte xl, byte yt, byte xr, byte yb, byte vidattr) {
     }
   }
 
-

@@ -8,7 +8,7 @@
 
  module name:        ulchar2v.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -21,7 +21,7 @@ mjs 04/01/92	created this module
 
 #include <stdlib.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 extern dword ul_vidptr;			/* video pointer */
@@ -29,7 +29,7 @@ extern dword ul_vidptr;			/* video pointer */
 /*======================================================================
 ;,fs
 ; void ul_char2video(byte x, byte y, byte vidattr, byte vchar)
-; 
+;
 ; write character at coords x,y using direct video
 ;
 ; in:	x = 0 based column number
@@ -39,7 +39,7 @@ extern dword ul_vidptr;			/* video pointer */
 ;
 ;	global: ul_vidptr must be set.  see ul_set_vidptr
 ;
-; out:	
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -49,4 +49,3 @@ void ul_char2video(byte x, byte y, byte vidattr, byte vchar) {
   *ul_vidptr.wptr = (vidattr << 8) + vchar;
   }
 
-

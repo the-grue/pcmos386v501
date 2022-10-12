@@ -8,7 +8,7 @@
 
  module name:        ulgetcur.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -22,17 +22,17 @@ mjs 04/01/92	created this module
 #include <stdlib.h>
 #include <dos.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
 ;,fs
 ; word ul_get_cursor(void)
-; 
+;
 ; get the cursor coordinates.
 ; uses i10f03.
 ;
-; in:	
+; in:
 ;
 ; out:	retval high byte = y coordinate
 ;	retval low byte = x coordinate
@@ -49,4 +49,3 @@ word ul_get_cursor(void) {
   return((regs.h.dh << 8) + regs.h.dl);
   }
 
-
