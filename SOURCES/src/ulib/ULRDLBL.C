@@ -22,7 +22,9 @@ mjs 12/15/92	created this module
 #include <stdlib.h>
 #include <stdio.h>
 #include <dos.h>
+#ifdef __BORLANDC__
 #include <dir.h>
+#endif
 #include <string.h>
 
 #include "asmtypes.h"
@@ -41,7 +43,11 @@ mjs 12/15/92	created this module
 ========================================================================*/
 void ul_read_dsklbl(byte drvnum, byte *lbuf) {
 
+#ifdef __BORLANDC__
   struct ffblk ffblk;			// structure for findfirst/next
+#else
+  struct find_t ffblk;
+#endif
   word err_stat;			// holds error status
   byte first;
   byte search_spec[8];
@@ -51,20 +57,37 @@ void ul_read_dsklbl(byte drvnum, byte *lbuf) {
   first = 1;
   while(1) {
     if(first) {
+#ifdef __BORLANDC__
       err_stat = findfirst(search_spec,&ffblk,8);
+#else
+      err_stat = _dos_findfirst(search_spec,8,&ffblk);
+#endif
       first = 0;
       }     else {
+#ifdef __BORLANDC__
       err_stat = findnext(&ffblk);
+#else
+      err_stat = _dos_findnext(&ffblk);
+#endif
       }
     if(err_stat) {
       return;
       }
+#ifdef __BORLANDC__
     if(ffblk.ff_attrib & 8) {
       if(strlen(ffblk.ff_name) > 8) {
         strncpy(lbuf,ffblk.ff_name,8);
         strcpy(&lbuf[8],&ffblk.ff_name[9]);
         }       else {
         strcpy(lbuf,ffblk.ff_name);
+#else
+    if(ffblk.attrib & 8) {
+      if(strlen(ffblk.name) > 8) {
+        strncpy(lbuf,ffblk.name,8);
+        strcpy(&lbuf[8],&ffblk.name[9]);
+        }       else {
+        strcpy(lbuf,ffblk.name);
+#endif
         }
       return;
       }
