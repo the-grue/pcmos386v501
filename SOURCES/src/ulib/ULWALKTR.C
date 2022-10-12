@@ -6,9 +6,9 @@
                (c) copyright 1992, the software link inc.
                        all rights reserved
 
- module name:        
+ module name:
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -22,14 +22,19 @@ mjs 04/01/92	created this module
 #include <stdlib.h>
 #include <stdio.h>
 #include <dos.h>
+#ifdef __BORLANDC__
 #include <dir.h>
+#endif
 #include <string.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
-
+#ifdef __BORLANDC__
 typedef struct ffblk DTA;
+#else
+typedef struct find_t DTA;
+#endif
 
 #define DTABYTES sizeof(DTA)
 
@@ -38,14 +43,14 @@ typedef struct dtatrack {
  byte *track;			// saves copy of tracking pointer
  } StackRecord;
 
-#define MAXDT 40 
+#define MAXDT 40
 static StackRecord DTstack[MAXDT]; // stack for nested levels of dta/track info
 static word DTstkp = 0;		// the stack pointer
 
 /*======================================================================
 ;,fs
 ; static word pushDT(DTA *d, byte *trk)
-; 
+;
 ; push the dta and tracking pointer on the stack.
 ;
 ; in:	d -> the DTA structure to save on the stack
@@ -71,11 +76,11 @@ static word pushDT(DTA *d, byte *trk) {
 ; static void popDT(DTA *d, byte **trk)
 ;
 ; pop a previsouly saved dta and tracking pointer from the stack.
-; 
+;
 ; in:	d -> the DTA structure to restore to
 ;	trk -> the tracking pointer to restore
 ;
-; out:	
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -89,7 +94,7 @@ static void popDT(DTA *d, byte **trk) {
 /*======================================================================
 ;,fs
 ; static void add_stars(byte **tptr)
-; 
+;
 ; add "\*.*" onto the end of a string.
 ;
 ; in:	tptr -> a character pointer that should be pointing to
@@ -114,13 +119,13 @@ static void add_stars(byte **tptr) {
 /*======================================================================
 ;,fs
 ; word ul_walk_tree(byte *dpbuf, byte *fspec, word (*work_func)(byte *, byte *, byte))
-; 
+;
 ; find each file within the specified directory and all child
 ; directories, calling a work function for each.
 ;
 ; in:	dpbuf -> a buffer containing the drive and path where the
-;		 search is to start.  this buffer must include 
-;		 expansion room for the longest possible 
+;		 search is to start.  this buffer must include
+;		 expansion room for the longest possible
 ;		 d:\path\fname.ext string.
 ;
 ;	work_func -> the work function that will be called for
@@ -163,10 +168,18 @@ word ul_walk_tree(byte *dpbuf, byte *fspec, word (*work_func)(byte *, byte *, by
   first = 1;
   while(1)  {
     if(first)  {
+#ifdef __BORLANDC__
       err_stat = findfirst(dpbuf,&ffblk,0x10);
+#else
+      err_stat = _dos_findfirst(dpbuf,0x10,&ffblk);
+#endif
       first = 0;
       }     else  {
+#ifdef __BORLANDC__
       err_stat = findnext(&ffblk);
+#else
+      err_stat = _dos_findnext(&ffblk);
+#endif
       }
     if(err_stat != 0)  {
       if(_doserrno == 0x12)  {
@@ -184,15 +197,24 @@ word ul_walk_tree(byte *dpbuf, byte *fspec, word (*work_func)(byte *, byte *, by
     // when a directory entry is found (skipping . and ..) it's time
     // to nest deeper.
 
+#ifdef __BORLANDC__
     if(ffblk.ff_attrib & 0x10) {
       if(ffblk.ff_name[0] == '.') {
+#else
+    if(ffblk.attrib & 0x10) {
+      if(ffblk.name[0] == '.') {
+#endif
         continue;
         }
 
       // add the found name onto the drive/path string, taking advantage
       // of the backslash that add_stars() will have put at trunc_ptr.
 
+#ifdef __BORLANDC__
       strcpy(trunc_ptr+1,ffblk.ff_name);
+#else
+      strcpy(trunc_ptr+1,ffblk.name);
+#endif
       if(pushDT(&ffblk,trunc_ptr)) {
         return(1);
         }
@@ -204,16 +226,24 @@ word ul_walk_tree(byte *dpbuf, byte *fspec, word (*work_func)(byte *, byte *, by
 
       // for each file found, see if it passes the filter spec.
 
+#ifdef __BORLANDC__
       ul_form_template(ffblk.ff_name,norm2);
+#else
+      ul_form_template(ffblk.name,norm2);
+#endif
       if(ul_qualify_template(norm1,norm2) == 0) {
         continue;
         }
 
-      // call the work function with the d:\path\ string, the found 
+      // call the work function with the d:\path\ string, the found
       // name, and its attribute.
 
       *(trunc_ptr+1) = 0;
+#ifdef __BORLANDC__
       if((*(work_func))(dpbuf,ffblk.ff_name,ffblk.ff_attrib) != 0)  {
+#else
+      if((*(work_func))(dpbuf,ffblk.name,ffblk.attrib) != 0)  {
+#endif
         return(1);
         }
       }
