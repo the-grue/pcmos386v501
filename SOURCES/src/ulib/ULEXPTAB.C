@@ -8,7 +8,7 @@
 
  module name:        ulexptab.c
  creation date:      05/21/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -24,13 +24,13 @@ mjs 05/21/92	created this module
 #include <string.h>
 #include <mem.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
 ;,fs
 ; byte ul_expand_tabs(byte *eptr, byte ts, word maxlen)
-; 
+;
 ; in:	eptr -> buffer containing string to process
 ;	ts = tab size
 ;	maxlen = total length of buffer
@@ -89,7 +89,11 @@ byte ul_expand_tabs(byte *eptr, byte ts, word maxlen) {
       // if any tail exists, move it
 
       if(tail_len) {
+#ifdef __BORLANDC__
         movmem(eptr,(eptr+add_blanks),tail_len);
+#else
+        memmove(eptr,(eptr+add_blanks),tail_len);
+#endif
         }
 
       // write in the blanks, insure proper termination
@@ -111,4 +115,3 @@ byte ul_expand_tabs(byte *eptr, byte ts, word maxlen) {
   }
 
 
-
