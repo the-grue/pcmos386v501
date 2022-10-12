@@ -8,7 +8,7 @@
 
  module name:        ulmkpth.c
  creation date:      12/15/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -22,10 +22,12 @@ mjs 12/15/92	created this module
 #include <stdlib.h>
 #include <dos.h>
 #include <io.h>
+#ifdef __BORLANDC__
 #include <dir.h>
+#endif
 #include <string.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 /*======================================================================
@@ -33,7 +35,7 @@ mjs 12/15/92	created this module
 ; word ul_makepath(byte *path)
 ;
 ; path must be in full form, starting with "d:\"
-; 
+;
 ; in:	path -> string naming path to build
 ;
 ; out:	retval = 0 if ok, != 0 if error

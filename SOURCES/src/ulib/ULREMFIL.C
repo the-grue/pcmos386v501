@@ -8,7 +8,7 @@
 
  module name:        ulremfil.c
  creation date:      04/01/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -22,11 +22,16 @@ jts 06/30/18	added code to allow build under bcc or tcc
 
 #include <stdlib.h>
 #include <dos.h>
+#ifdef __BORLANDC__
 #include <dir.h>
+#else
+#include <stdio.h>
+#include "ulwathlp.h"
+#endif
 #include <io.h>
 #include <string.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
 
 #ifndef __BORLANDC__
@@ -37,7 +42,7 @@ jts 06/30/18	added code to allow build under bcc or tcc
 /*======================================================================
 ;,fs
 ; byte ul_remove_files(byte *filespec, byte search_attr)
-; 
+;
 ; in:	filespec -> file specification string (e.g. "c:\\xyz\\abc*.*")
 ;	search_attr = attribute, using FA_NORMAL, FA_RDONLY, etc.
 ;
@@ -50,7 +55,11 @@ byte ul_remove_files(byte *filespec, byte search_attr) {
 
   word first;				// controls findfirst/next calls
   word err_stat;			// holds error status
+#ifdef __BORLANDC__
   struct ffblk ffblk;			// for findfirst/next
+#else
+  struct find_t ffblk;			// for findfirst/next
+#endif
   byte drvstr[MAXDRIVE];		// for fnsplit
   byte pathstr[MAXDIR];			// for fnsplit
   byte fnamestr[MAXFILE];		// for fnsplit
@@ -59,18 +68,30 @@ byte ul_remove_files(byte *filespec, byte search_attr) {
   byte *trunc_ptr;			// used to maintain wbuf
   word attr;				// each file's attribute
 
+#ifdef __BORLANDC__
   fnsplit(filespec,drvstr,pathstr,fnamestr,extstr);
+#else
+  _splitpath(filespec,drvstr,pathstr,fnamestr,extstr);
+#endif
   strcpy(wbuf,drvstr);
   strcat(wbuf,pathstr);
   trunc_ptr = strchr(wbuf,0);
   first = 1;
   while(1) {
     if(first) {
+#ifdef __BORLANDC__
       err_stat = findfirst(filespec,&ffblk,search_attr);
+#else
+      err_stat = _dos_findfirst(filespec,search_attr,&ffblk);
+#endif
       first = 0;
       }
     else {
+#ifdef __BORLANDC__
       err_stat = findnext(&ffblk);
+#else
+      err_stat = _dos_findnext(&ffblk);
+#endif
       }
     if(err_stat != 0) {
       if(_doserrno == 0x12) {
@@ -80,17 +101,34 @@ byte ul_remove_files(byte *filespec, byte search_attr) {
         return(1);
         }
       }
+#ifdef __BORLANDC__
     strcat(wbuf,ffblk.ff_name);
+#else
+    strcat(wbuf,ffblk.name);
+#endif
     if(search_attr != FA_NORMAL) {
+#ifdef __BORLANDC__
       attr = _chmod(wbuf,0);
+#else
+      if(_dos_getfileattr(wbuf, &attr) != 0) {
+      	return(1);
+      }
+#endif
       if(attr == 0xffff) {
         return(1);
         }
       if(attr & search_attr) {
+#ifdef __BORLANDC__
         attr = _chmod(wbuf,1,FA_NORMAL);
         if(attr == 0xffff) {
           return(1);
           }
+#else
+	attr = _dos_setfileattr(wbuf, FA_NORMAL);
+	if(attr != 0) {
+	  return(1);
+	  }
+#endif
         }
       }
     if(remove(wbuf) != 0) {
