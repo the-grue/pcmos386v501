@@ -8,7 +8,7 @@
 
  module name:        ulwrlbl.c
  creation date:      12/15/92
- revision date:      
+ revision date:
  author:             mjs
  description:        ulib module
 
@@ -24,17 +24,19 @@ mjs 12/15/92	created this module
 #include <dos.h>
 #include <string.h>
 
-#include <asmtypes.h>
+#include "asmtypes.h"
 #include "ulib.h"
+
+unsigned int get_DS(void);
 
 /*======================================================================
 ;,fs
 ; void ul_write_dsklbl(byte drv, byte *lbl)
-; 
+;
 ; in:	drv = drive number (1 for 'A', 2 for 'B', etc.)
 ;	lbl -> string containing new label name
 ;
-; out:	
+; out:
 ;
 ;,fe
 ========================================================================*/
@@ -52,7 +54,11 @@ void ul_write_dsklbl(byte drv, byte *lbl) {
   strncpy(&FCB[8],"???????????",11);
   regs.h.ah = 0x13;
   regs.x.dx = (unsigned)FCB;
+#ifdef __BORLANDC__
   segregs.ds = _DS;
+#else
+  segregs.ds = get_DS();
+#endif
   int86x(0x21,&regs,&regs,&segregs);
   fname[0] = drv + 'A' - 1;
   fname[1] = ':';
@@ -68,11 +74,14 @@ void ul_write_dsklbl(byte drv, byte *lbl) {
   regs.h.ah = 0x3c;
   regs.x.cx = 8;
   regs.x.dx = (word)fname;
+#ifdef __BORLANDC__
   segregs.ds = _DS;
+#else
+  segregs.ds = get_DS();
+#endif
   int86x(0x21,&regs,&regs,&segregs);
   regs.x.bx = regs.x.ax;
   regs.h.ah = 0x3e;
   int86x(0x21,&regs,&regs,&segregs);
   }
 
-
