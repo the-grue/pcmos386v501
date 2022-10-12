@@ -4,22 +4,28 @@ obj3 = ULCHAR2V.OBJ ULDRWHBR.OBJ ULGETCHO.OBJ ULGETSTR.OBJ ULMESSAG.OBJ ULSETATR
 obj4 = ULCLRBOX.OBJ ULDRWVBR.OBJ ULFILBOX.OBJ ULGETCUR.OBJ ULGETXY.OBJ ULSETCUR.OBJ
 obj5 = ULSTOCK.OBJ ULSCRLUP.OBJ ULANYFIL.OBJ ULFORMT.OBJ ULOPCLWN.OBJ ULTRDIRL.OBJ ULVIEW.OBJ 
 obj6 = ULEXPTAB.OBJ ULRDLBL.OBJ ULWALKTR.OBJ ULMKPTH.OBJ ULREMFIL.OBJ ULTRDIR.OBJ ULWRLBL.OBJ
+aobj = ULSVRSWN.OBJ
 lib = ulib.lib
 
 CC = wcc
 CFLAGS = -zq
 AR = wlib
+AS = wasm
 
-$(lib): $(obj) $(obj2) $(obj3) $(obj4) $(obj5) $(obj6)
+$(lib): $(obj) $(obj2) $(obj3) $(obj4) $(obj5) $(obj6) $(aobj)
 	$(AR) $@ -+$(obj)
 	$(AR) $@ -+$(obj2)
 	$(AR) $@ -+$(obj3)
 	$(AR) $@ -+$(obj4)
 	$(AR) $@ -+$(obj5)
 	$(AR) $@ -+$(obj6)
+	$(AR) $@ -+$(aobj)
 
 .c.obj:
 	$(CC) -fo=$@ $(CFLAGS) $<
+
+.asm.obj:
+	$(AS) $<
 
 clean: .symbolic
 	del *.obj
